@@ -40,10 +40,11 @@ public class HomeController {
     @PostMapping("/")
     public String readFile(@RequestParam("files") MultipartFile[] multipartFileArray, Model model, HttpSession session) throws IOException {
 
-        List<DxfFile> dxfFileList = new ArrayList<>();
+        int column = 4;
+        List<List<DxfFile>> outerDxfFileList = new ArrayList<>();
 
         if (session.getAttribute("dxfFileList") != null) {
-            dxfFileList = (List<DxfFile>) session.getAttribute("dxfFileList");
+            outerDxfFileList = (List<List<DxfFile>>) session.getAttribute("dxfFileList");
         }
 
         for (MultipartFile multipartFile : multipartFileArray) {
@@ -55,12 +56,25 @@ public class HomeController {
                 File file = new File(multipartFile.getOriginalFilename());
                 multipartFile.transferTo(file);
                 DxfFile dxfFile = parseFile.dxfFile(file);
-                dxfFileList.add(dxfFile);
+
+                if (outerDxfFileList.isEmpty() || outerDxfFileList == null) {
+                    List<DxfFile> newInnerDxfFileList = new ArrayList<>();
+                    newInnerDxfFileList.add(dxfFile);
+                    outerDxfFileList.add(newInnerDxfFileList);
+                } else {
+                    List<DxfFile> innerDxfFileList = outerDxfFileList.get(outerDxfFileList.size() - 1);
+                    if (innerDxfFileList.size() < column) {
+                        innerDxfFileList.add(dxfFile);
+                    } else {
+                        List<DxfFile> newInnerDxfFileList = new ArrayList<>();
+                        newInnerDxfFileList.add(dxfFile);
+                        outerDxfFileList.add(newInnerDxfFileList);
+                    }
+                }
                 file.delete();
             }
         }
-
-        model.addAttribute("dxfFileList", dxfFileList);
+        model.addAttribute("dxfFileList", outerDxfFileList);
         return "index";
     }
 

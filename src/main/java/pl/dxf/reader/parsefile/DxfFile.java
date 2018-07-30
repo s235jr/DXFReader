@@ -175,12 +175,6 @@ public class DxfFile {
     public String toString() {
         return "DxfFile{" +
                 "name='" + name + '\'' +
-                ", namePng='" + namePng + '\'' +
-                ", thickness='" + thickness + '\'' +
-                ", materialTyp='" + materialTyp + '\'' +
-                ", amount='" + amount + '\'' +
-                ", width=" + width +
-                ", height=" + height +
                 '}';
     }
 }
