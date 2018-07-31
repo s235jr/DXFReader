@@ -80,4 +80,12 @@ public class HomeController {
         return "redirect:/";
     }
 
+    @PostMapping("/delDxfFileFromList")
+    public String removeDxfFileFromSession(HttpSession session, @RequestParam int del) {
+        List<DxfFile> dxfFileList = (List<DxfFile>) session.getAttribute("dxfFileList");
+        dxfFileList.remove(del);
+        session.setAttribute("dxfFileList", dxfFileList);
+        return "redirect:/";
+    }
+
 }

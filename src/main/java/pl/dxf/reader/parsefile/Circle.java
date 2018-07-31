@@ -9,7 +9,7 @@ public class Circle implements ParseObject {
     private double middleY;
     private double radius;
     private double radiusStart = 0;
-    private double radiusEnd = 0;
+    private double radiusEnd = 360;
 
     public Circle() {
     }

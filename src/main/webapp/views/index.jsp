@@ -11,36 +11,42 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Path</title>
+    <title>Dxf Reader</title>
 </head>
 <body>
+<div>
+    <h1 align="center">Dxf Reader</h1>
+</div>
+<div align="center">
+    <form method="post" action="/" enctype="multipart/form-data">
+        <input type="file" name="files" multiple/>
+        <select name="columns">
+            <option value="2" <c:if test="${columns == 2}">selected</c:if>>2 Columns</option>
+            <option value="3" <c:if test="${columns == 3}">selected</c:if>>3 Columns</option>
+            <option value="4" <c:if test="${columns == 4}">selected</c:if>>4 Columns</option>
+            <option value="5" <c:if test="${columns == 5}">selected</c:if>>5 Columns</option>
+            <option value="6" <c:if test="${columns == 6}">selected</c:if>>6 Columns</option>
+        </select>
+        <input type="submit" value="Załaduj plik">
+    </form>
+</div>
+<div align="center">
+    <form method="POST" action="/clearSession">
+        <input type="submit" value="Stwórz nowe zlecenie"/>
+    </form>
+</div>
 
-<form method="post" action="/" enctype="multipart/form-data">
-    <input type="file" name="files" multiple/>
-    <select name="columns">
-        <option value="2" <c:if test="${columns == 2}">selected</c:if>>2 Columns</option>
-        <option value="3" <c:if test="${columns == 3}">selected</c:if>>3 Columns</option>
-        <option value="4" <c:if test="${columns == 4}">selected</c:if>>4 Columns</option>
-        <option value="5" <c:if test="${columns == 5}">selected</c:if>>5 Columns</option>
-    </select>
-    <input type="submit" value="Załaduj plik">
-</form>
-
-<form method="POST" action="/clearSession">
-    <input type="submit" value="Stwórz nowe zlecenie"/>
-</form>
-
-
-<table border="5px">
+<table border="5px" align="center">
     <c:if test="${not empty dxfFileList}">
         <c:forEach items="${dxfFileList}" var="dxfFile" varStatus="loop">
 
             <c:if test="${loop.count % columns == 1}"><tr></c:if>
             <td>
-                <table border="3px">
+                <table border="3px" align="center">
                     <tr>
-                        <td colspan="6"><img src="<c:url value="${dxfFile.namePng}"/>" alt="image" height="300px"
-                                             width="300px">
+                        <td colspan="6" align="center"><img src="<c:url value="${dxfFile.namePng}"/>" alt="image"
+                                                            height="300px"
+                                                            width="300px">
                         </td>
                     </tr>
                     <tr>
@@ -63,7 +69,13 @@
                     </tr>
                     <tr>
                         <td>Name:</td>
-                        <td colspan="5"><c:out value="${dxfFile.name}"/>.dxf</td>
+                        <td colspan="4"><c:out value="${dxfFile.name}"/>.dxf</td>
+                        <td>
+                            <form method="post" action="/delDxfFileFromList">
+                                <input type="hidden" name="del" value="${loop.count-1}">
+                                <input type="submit" value="Del">
+                            </form>
+                        </td>
                     </tr>
                 </table>
             </td>
