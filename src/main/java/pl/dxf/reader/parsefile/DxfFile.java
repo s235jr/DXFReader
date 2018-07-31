@@ -4,7 +4,6 @@ import com.aspose.cad.Image;
 import com.aspose.cad.ImageOptionsBase;
 import com.aspose.cad.imageoptions.CadRasterizationOptions;
 import com.aspose.cad.imageoptions.PngOptions;
-import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -14,6 +13,7 @@ import java.util.Scanner;
 
 public class DxfFile {
 
+    private String originalFileName;
     private String name;
     private String namePng;
     private String thickness;
@@ -25,6 +25,7 @@ public class DxfFile {
     public void parseName(String fileName, String sign, String imgFileTyp){
         try {
             String[] valueFromName = fileName.split(sign);
+            this.originalFileName = fileName;
             this.name = (valueFromName[3].substring(0, valueFromName[3].length() - 4));
             this.namePng = ("0" + this.name + LocalDateTime.now() + imgFileTyp);
             this.thickness = valueFromName[0];
@@ -114,6 +115,14 @@ public class DxfFile {
         }
     }
 
+    public String getOriginalFileName() {
+        return originalFileName;
+    }
+
+    public void setOriginalFileName(String oryginalFileName) {
+        this.originalFileName = oryginalFileName;
+    }
+
     public String getName() {
         return name;
     }
@@ -177,4 +186,6 @@ public class DxfFile {
                 "name='" + name + '\'' +
                 '}';
     }
+
+
 }

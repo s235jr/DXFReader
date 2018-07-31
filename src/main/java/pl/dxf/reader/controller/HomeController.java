@@ -22,7 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Controller
-@SessionAttributes("dxfFileList")
+@SessionAttributes({"dxfFileList", "columns"})
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class HomeController {
 
@@ -38,13 +38,12 @@ public class HomeController {
     }
 
     @PostMapping("/")
-    public String readFile(@RequestParam("files") MultipartFile[] multipartFileArray, Model model, HttpSession session) throws IOException {
+    public String readFile(@RequestParam("files") MultipartFile[] multipartFileArray, @RequestParam int columns, Model model, HttpSession session) throws IOException {
 
-        int column = 4;
-        List<List<DxfFile>> outerDxfFileList = new ArrayList<>();
+        List<DxfFile> dxfFileList = new ArrayList<>();
 
         if (session.getAttribute("dxfFileList") != null) {
-            outerDxfFileList = (List<List<DxfFile>>) session.getAttribute("dxfFileList");
+            dxfFileList = (List<DxfFile>) session.getAttribute("dxfFileList");
         }
 
         for (MultipartFile multipartFile : multipartFileArray) {
@@ -53,29 +52,32 @@ public class HomeController {
             Matcher matcher = pattern.matcher(multipartFile.getOriginalFilename());
 
             if (matcher.matches()) {
-                File file = new File(multipartFile.getOriginalFilename());
-                multipartFile.transferTo(file);
-                DxfFile dxfFile = parseFile.dxfFile(file);
-
-                if (outerDxfFileList.isEmpty() || outerDxfFileList == null) {
-                    List<DxfFile> newInnerDxfFileList = new ArrayList<>();
-                    newInnerDxfFileList.add(dxfFile);
-                    outerDxfFileList.add(newInnerDxfFileList);
-                } else {
-                    List<DxfFile> innerDxfFileList = outerDxfFileList.get(outerDxfFileList.size() - 1);
-                    if (innerDxfFileList.size() < column) {
-                        innerDxfFileList.add(dxfFile);
-                    } else {
-                        List<DxfFile> newInnerDxfFileList = new ArrayList<>();
-                        newInnerDxfFileList.add(dxfFile);
-                        outerDxfFileList.add(newInnerDxfFileList);
+                boolean isOnDxfFileList = false;
+                for (DxfFile dxfFile : dxfFileList) {
+                    if (dxfFile.getOriginalFileName().equals(multipartFile.getOriginalFilename())) {
+                        isOnDxfFileList = true;
                     }
                 }
-                file.delete();
+                if (isOnDxfFileList == false) {
+                    File file = new File(multipartFile.getOriginalFilename());
+                    multipartFile.transferTo(file);
+                    DxfFile dxfFile = parseFile.dxfFile(file);
+                    dxfFileList.add(dxfFile);
+                    file.delete();
+                }
             }
         }
-        model.addAttribute("dxfFileList", outerDxfFileList);
+        model.addAttribute("columns", columns);
+        model.addAttribute("dxfFileList", dxfFileList);
         return "index";
+    }
+
+    @PostMapping("/clearSession")
+    public String clearSession(HttpSession session) {
+        List<DxfFile> dxfFileList = (List<DxfFile>) session.getAttribute("dxfFileList");
+        dxfFileList.clear();
+        session.setAttribute("dxfFileList", dxfFileList);
+        return "redirect:/";
     }
 
 }
