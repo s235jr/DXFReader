@@ -76,6 +76,10 @@ public class HomeController {
     public String clearSession(HttpSession session) {
         if (session.getAttribute("dxfFileList") != null) {
             List<DxfFile> dxfFileList = (List<DxfFile>) session.getAttribute("dxfFileList");
+            for(DxfFile dxfFile : dxfFileList) {
+                File file = new File(dxfFile.getNamePng());
+                file.delete();
+            }
             dxfFileList.clear();
             session.setAttribute("dxfFileList", dxfFileList);
         }
