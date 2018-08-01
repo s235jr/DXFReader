@@ -102,8 +102,8 @@ public class DxfFile {
         try {
             img = ImageIO.read(new File(getNamePng()));
 
-            BufferedImage subImage = img.getSubimage((int) (0.25 * size), (int) (0), (int) (0.75 * size),
-                    (int) (1 * size));
+            BufferedImage subImage = img.getSubimage((int) (0.25 * size), (0), (int) (0.75 * size),
+                    (1 * size));
 
             int firstPixelX = resolution;
             int lastPixelX = 0;

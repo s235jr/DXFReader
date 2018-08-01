@@ -16,13 +16,14 @@ import pl.dxf.reader.parsefile.ParseFile;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Controller
-@SessionAttributes({"dxfFileList", "columns"})
+@SessionAttributes({"dxfFileList", "firstName", "lastName", "description", "createDate"})
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class HomeController {
 
@@ -38,7 +39,7 @@ public class HomeController {
     }
 
     @PostMapping("/")
-    public String readFile(@RequestParam("files") MultipartFile[] multipartFileArray, @RequestParam int columns, Model model, HttpSession session) throws IOException {
+    public String readFile(@RequestParam("files") MultipartFile[] multipartFileArray, Model model, HttpSession session) throws IOException {
 
         List<DxfFile> dxfFileList = new ArrayList<>();
 
@@ -67,16 +68,17 @@ public class HomeController {
                 }
             }
         }
-        model.addAttribute("columns", columns);
         model.addAttribute("dxfFileList", dxfFileList);
         return "index";
     }
 
     @PostMapping("/clearSession")
     public String clearSession(HttpSession session) {
-        List<DxfFile> dxfFileList = (List<DxfFile>) session.getAttribute("dxfFileList");
-        dxfFileList.clear();
-        session.setAttribute("dxfFileList", dxfFileList);
+        if (session.getAttribute("dxfFileList") != null) {
+            List<DxfFile> dxfFileList = (List<DxfFile>) session.getAttribute("dxfFileList");
+            dxfFileList.clear();
+            session.setAttribute("dxfFileList", dxfFileList);
+        }
         return "redirect:/";
     }
 
@@ -85,6 +87,17 @@ public class HomeController {
         List<DxfFile> dxfFileList = (List<DxfFile>) session.getAttribute("dxfFileList");
         dxfFileList.remove(del);
         session.setAttribute("dxfFileList", dxfFileList);
+        return "redirect:/";
+    }
+
+    @PostMapping("/addFooter")
+    public String addFooter(Model model, @RequestParam String firstName, @RequestParam String lastName, @RequestParam String description){
+        model.addAttribute("firstName", firstName);
+        model.addAttribute("lastName", lastName);
+        model.addAttribute("description", description);
+        LocalDateTime createDate = LocalDateTime.now();
+        model.addAttribute("createDate", createDate);
+
         return "redirect:/";
     }
 

@@ -70,9 +70,9 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         return multipartResolver;
     }
 
-
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/**").addResourceLocations("file:///home/tomasz/bin/apache-tomcat-9.0.8/bin/");
+        registry.addResourceHandler("/**", "/style/**").addResourceLocations("file:///home/tomasz/bin/apache-tomcat-9.0.8/bin/", "/style/");
     }
+
 
 }

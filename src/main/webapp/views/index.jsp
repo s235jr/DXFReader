@@ -12,77 +12,109 @@
 <html>
 <head>
     <title>Dxf Reader</title>
+    <link rel="stylesheet" href="/style/style.css">
+    <style>
+        figure {
+            display: inline-block;
+            width: 300px;
+            height: auto;
+            padding: 0;
+            border: 3px solid black;
+            margin: 0;
+        }
+    </style>
 </head>
 <body>
-<div>
-    <h1 align="center">Dxf Reader</h1>
+<h1 class="no-print" align="center">Dxf Reader</h1>
+
+<div class="no-print" align="center">
+    <div class="block_container">
+        <div id="loadFiles" align="left">
+            <form method="post" action="/" enctype="multipart/form-data">
+                <input type="file" name="files" multiple/>
+                <input type="submit" value="Załaduj plik">
+            </form>
+        </div>
+        <div id="newSession" align="right">
+            <form method="POST" action="/clearSession">
+                <input type="submit" value="Stwórz nowe zlecenie"/>
+            </form>
+        </div>
+    </div>
 </div>
-<div align="center">
-    <form method="post" action="/" enctype="multipart/form-data">
-        <input type="file" name="files" multiple/>
-        <select name="columns">
-            <option value="2" <c:if test="${columns == 2}">selected</c:if>>2 Columns</option>
-            <option value="3" <c:if test="${columns == 3}">selected</c:if>>3 Columns</option>
-            <option value="4" <c:if test="${columns == 4}">selected</c:if>>4 Columns</option>
-            <option value="5" <c:if test="${columns == 5}">selected</c:if>>5 Columns</option>
-            <option value="6" <c:if test="${columns == 6}">selected</c:if>>6 Columns</option>
-        </select>
-        <input type="submit" value="Załaduj plik">
-    </form>
-</div>
-<div align="center">
-    <form method="POST" action="/clearSession">
-        <input type="submit" value="Stwórz nowe zlecenie"/>
+
+<div class="no-print" align="center">
+    <form method="post" action="/addFooter">
+        <label>Imię:</label>
+        <input type="text" name="firstName" value="${firstName}">
+        <label>Nazwisko:</label>
+        <input type="text" name="lastName" value="${lastName}">
+        <label>Opis:</label>
+        <input type="text" name="description" value="${description}">
+        <input type="submit" value="Zapisz">
     </form>
 </div>
 
-<table border="5px" align="center">
+<div width="100%" align="center">
     <c:if test="${not empty dxfFileList}">
         <c:forEach items="${dxfFileList}" var="dxfFile" varStatus="loop">
-
-            <c:if test="${loop.count % columns == 1}"><tr></c:if>
-            <td>
-                <table border="3px" align="center">
-                    <tr>
-                        <td colspan="6" align="center"><img src="<c:url value="${dxfFile.namePng}"/>" alt="image"
-                                                            height="300px"
-                                                            width="300px">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Thickness:</td>
-                        <td><c:out value="${dxfFile.thickness}"/>mm</td>
-                        <td>Amount:</td>
-                        <td><c:out value="${dxfFile.amount}"/></td>
-                        <td>Material:</td>
-                        <td><c:out value="${dxfFile.materialTyp}"/></td>
-                    </tr>
-                    <tr>
-                        <td>Width:</td>
-                        <td colspan="2"><fmt:formatNumber type="number" maxFractionDigits="0"><c:out
-                                value="${dxfFile.width}"/></fmt:formatNumber>mm
-                        </td>
-                        <td>Height:</td>
-                        <td colspan="2"><fmt:formatNumber type="number" maxFractionDigits="0"><c:out
+            <figure>
+                <img width="300px" height="auto" src="<c:url value="${dxfFile.namePng}"/>" alt="image">
+                <figcaption>
+                    <hr>
+                    <div class="block_container">
+                        <div width="15%"><c:out value="${dxfFile.thickness}"/>mm&nbsp;||&nbsp;</div>
+                        <div width="15%"><c:out value="${dxfFile.amount}"/>&nbsp;||&nbsp;</div>
+                        <div width="10%"><c:out value="${dxfFile.materialTyp}"/></div>
+                    </div>
+                    <hr>
+                    <div class="block_container">
+                        <div width="20%">szer:&nbsp;</div>
+                        <div width="20%"><fmt:formatNumber type="number" maxFractionDigits="0"><c:out
+                                value="${dxfFile.width}"/></fmt:formatNumber>mm&nbsp;||&nbsp;
+                        </div>
+                        <div width="20%">wys:&nbsp;</div>
+                        <div width="20%"><fmt:formatNumber type="number" maxFractionDigits="0"><c:out
                                 value="${dxfFile.height}"/></fmt:formatNumber>mm
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Name:</td>
-                        <td colspan="4"><c:out value="${dxfFile.name}"/>.dxf</td>
-                        <td>
-                            <form method="post" action="/delDxfFileFromList">
-                                <input type="hidden" name="del" value="${loop.count-1}">
-                                <input type="submit" value="Del">
-                            </form>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-            <c:if test="${loop.count % columns == 0}"></tr></c:if>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="block_container">
+                        <div width="25%">Nazwa:&nbsp;</div>
+                        <div width="25%"><c:out value="${dxfFile.name}"/>.dxf&nbsp;</div>
+                    </div>
+                    <hr>
+                    <div>
+                        <form class="no-print" method="post" action="/delDxfFileFromList">
+                            <input type="hidden" name="del" value="${loop.count-1}">
+                            <button type="submit">~Usuń~</button>
+                        </form>
+                    </div>
+                </figcaption>
+            </figure>
         </c:forEach>
     </c:if>
-</table>
+</div>
+
+<div class="divFooter">
+    <hr>
+    <div class="block_container" style="border: 3px">
+        <div>Zamawiający:&nbsp;</div>
+        <div><c:out value="${firstName}"/>&nbsp;<c:out value="${lastName}"/></div>
+    </div>
+    <hr>
+    <div class="block_container">
+        <div>Data utworzenia:&nbsp;</div>
+        <div><c:out value="${createDate}"/></div>
+    </div>
+    <hr>
+    <div class="block_container">
+        <div>Opis:&nbsp;</div>
+        <div><c:out value="${description}"/></div>
+    </div>
+    <hr>
+</div>
+
 </body>
 </html>
 

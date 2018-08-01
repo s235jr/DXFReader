@@ -1,0 +1,38 @@
+@media print {
+    header {
+        display: none;
+    }
+    .no-print { display: none; }
+    div.divFooter {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+    }
+}
+
+@media screen {
+    div.divFooter {
+        display: none;
+    }
+    figure.figureFooter {
+        display: none;
+    }
+}
+
+.block_container
+{
+    display: flex;
+    justify-content: center;
+}
+
+#loadFiles
+{
+    width: 70%;
+    display:inline;
+}
+
+#newSession
+{
+    width: 25%;
+    display:inline;
+}
