@@ -61,7 +61,7 @@
     <c:if test="${not empty dxfFileList}">
         <c:forEach items="${dxfFileList}" var="dxfFile" varStatus="loop">
             <figure>
-                <img width="300px" height="auto" src="<c:url value="${dxfFile.namePng}"/>" alt="image">
+                <img width="300px" height="auto" src="<c:url value="${dxfFile.namePng}"/>" alt="image"/>
                 <figcaption>
                     <hr>
                     <div class="block_container">

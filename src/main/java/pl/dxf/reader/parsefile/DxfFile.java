@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class DxfFile {
@@ -27,7 +28,8 @@ public class DxfFile {
             String[] valueFromName = fileName.split(sign);
             this.originalFileName = fileName;
             this.name = (valueFromName[3].substring(0, valueFromName[3].length() - 4));
-            this.namePng = ("0" + this.name + LocalDateTime.now() + imgFileTyp);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+            this.namePng = ("0" + this.name + LocalDateTime.now().format(formatter) + imgFileTyp);
             this.thickness = valueFromName[0];
             this.materialTyp = valueFromName[1];
             this.amount = valueFromName[2];

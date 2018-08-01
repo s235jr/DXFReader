@@ -103,7 +103,6 @@ public class HomeController {
         model.addAttribute("description", description);
         LocalDateTime createDate = LocalDateTime.now();
         model.addAttribute("createDate", createDate);
-
         return "redirect:/";
     }
 
