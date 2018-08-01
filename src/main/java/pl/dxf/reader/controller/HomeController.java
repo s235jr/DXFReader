@@ -89,6 +89,8 @@ public class HomeController {
     @PostMapping("/delDxfFileFromList")
     public String removeDxfFileFromSession(HttpSession session, @RequestParam int del) {
         List<DxfFile> dxfFileList = (List<DxfFile>) session.getAttribute("dxfFileList");
+        File file = new File(dxfFileList.get(del).getNamePng());
+        file.delete();
         dxfFileList.remove(del);
         session.setAttribute("dxfFileList", dxfFileList);
         return "redirect:/";
