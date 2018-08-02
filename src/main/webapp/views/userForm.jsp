@@ -13,7 +13,7 @@
     <title>Dxf Reader</title>
 </head>
 <body>
-<h1 class="no-print" align="center">Dxf Reader</h1>
+<a href="/"><h1 class="no-print" align="center">Dxf Reader</h1></a>
 <table align="center">
     <form:form method="post" modelAttribute="user">
         <tr>

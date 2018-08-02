@@ -17,6 +17,7 @@ public class Raport {
     @ManyToOne
     private Status status;
     private String description;
+    private long numberOfDxfFile;
 
     public long getId() {
         return id;
@@ -64,5 +65,26 @@ public class Raport {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public long getNumberOfDxfFile() {
+        return numberOfDxfFile;
+    }
+
+    public void setNumberOfDxfFile(long numberOfDxfFile) {
+        this.numberOfDxfFile = numberOfDxfFile;
+    }
+
+    @Override
+    public String toString() {
+        return "Raport{" +
+                "id=" + id +
+                ", createdDate=" + createdDate +
+                ", updatedDate=" + updatedDate +
+                ", user=" + user +
+                ", status=" + status +
+                ", description='" + description + '\'' +
+                ", numberOfDxfFile=" + numberOfDxfFile +
+                '}';
     }
 }

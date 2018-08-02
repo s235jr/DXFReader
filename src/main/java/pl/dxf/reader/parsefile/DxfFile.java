@@ -37,6 +37,7 @@ public class DxfFile {
             this.originalFileName = fileName;
             this.name = (valueFromName[3].substring(0, valueFromName[3].length() - 4));
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+
             this.namePng = ("0" + this.name + LocalDateTime.now().format(formatter) + imgFileTyp);
             this.thickness = valueFromName[0];
             this.materialTyp = valueFromName[1];

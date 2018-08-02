@@ -1,5 +1,6 @@
 package pl.dxf.reader.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Controller;
@@ -28,11 +29,8 @@ import java.util.regex.Pattern;
 public class HomeController {
 
 
-    public final ParseFile parseFile;
-
-    public HomeController(ParseFile parseFile) {
-        this.parseFile = parseFile;
-    }
+    @Autowired
+    ParseFile parseFile;
 
     @GetMapping("/")
     public String home() {
@@ -45,28 +43,7 @@ public class HomeController {
         if (session.getAttribute("dxfFileList") != null) {
             dxfFileList = (List<DxfFile>) session.getAttribute("dxfFileList");
         }
-
-        for (MultipartFile multipartFile : multipartFileArray) {
-            String regex = ".+\\.(dxf)";
-            Pattern pattern = Pattern.compile(regex);
-            Matcher matcher = pattern.matcher(multipartFile.getOriginalFilename());
-
-            if (matcher.matches()) {
-                boolean isOnDxfFileList = false;
-                for (DxfFile dxfFile : dxfFileList) {
-                    if (dxfFile.getOriginalFileName().equals(multipartFile.getOriginalFilename())) {
-                        isOnDxfFileList = true;
-                    }
-                }
-                if (isOnDxfFileList == false) {
-                    File file = new File(multipartFile.getOriginalFilename());
-                    multipartFile.transferTo(file);
-                    DxfFile dxfFile = parseFile.dxfFile(file);
-                    dxfFileList.add(dxfFile);
-                    file.delete();
-                }
-            }
-        }
+        addFilesToDxfFileList(multipartFileArray, dxfFileList);
         LocalDateTime createDate = LocalDateTime.now();
         model.addAttribute("createDate", createDate);
         model.addAttribute("dxfFileList", dxfFileList);
@@ -77,6 +54,10 @@ public class HomeController {
     public String clearSession(HttpSession session) {
         if (session.getAttribute("dxfFileList") != null) {
             List<DxfFile> dxfFileList = (List<DxfFile>) session.getAttribute("dxfFileList");
+            for(DxfFile dxfFile : dxfFileList) {
+                File file = new File(dxfFile.getNamePng());
+                file.delete();
+            }
             dxfFileList.clear();
             session.setAttribute("dxfFileList", dxfFileList);
         }
@@ -101,6 +82,30 @@ public class HomeController {
         LocalDateTime createDate = LocalDateTime.now();
         model.addAttribute("createDate", createDate);
         return "redirect:/";
+    }
+
+    private void addFilesToDxfFileList(@RequestParam("files") MultipartFile[] multipartFileArray, List<DxfFile> dxfFileList) throws IOException {
+        for (MultipartFile multipartFile : multipartFileArray) {
+            String regex = ".+\\.(dxf)";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(multipartFile.getOriginalFilename());
+
+            if (matcher.matches()) {
+                boolean isOnDxfFileList = false;
+                for (DxfFile dxfFile : dxfFileList) {
+                    if (dxfFile.getOriginalFileName().equals(multipartFile.getOriginalFilename())) {
+                        isOnDxfFileList = true;
+                    }
+                }
+                if (isOnDxfFileList == false) {
+                    File file = new File(multipartFile.getOriginalFilename());
+                    multipartFile.transferTo(file);
+                    DxfFile dxfFile = parseFile.dxfFile(file);
+                    dxfFileList.add(dxfFile);
+                    file.delete();
+                }
+            }
+        }
     }
 
 }

@@ -12,5 +12,6 @@ public interface RaportRepository extends JpaRepository<Raport, Long> {
     @Query("select max(id) from Raport ")
     Long getLastId();
 
+    List<Raport> findRaportByUserId(Long id);
 }
 

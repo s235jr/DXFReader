@@ -13,16 +13,16 @@
     <title>Dxf Reader</title>
 </head>
 <body>
-<h1 class="no-print" align="center">Dxf Reader</h1>
+<a href="/"><h1 class="no-print" align="center">Dxf Reader</h1></a>
 <div align="center">
 
     <table align="center">
         <form:form method="post" action="/login" modelAttribute="user">
             <tr>
-                <td><form:input path="email" placeholder="Email"/><form:errors path="email"/></td>
+                <td><form:input path="email" placeholder="Email" value="admin@admin.pl"/><form:errors path="email"/></td>
             </tr>
             <tr>
-                <td><form:password path="password" placeholder="Hasło"/><form:errors path="password"/></td>
+                <td><form:password path="password" placeholder="Hasło" value="admin"/><form:errors path="password"/></td>
             </tr>
             <tr>
                 <td colspan="2"><input type="submit" value="Zaloguj się"></td>

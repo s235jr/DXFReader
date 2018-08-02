@@ -28,8 +28,11 @@
 <c:if test="${not empty user}">
     <div class="no-print" align="right">
         Witaj&nbsp;<c:out value="${user.firstName}"/>&nbsp;<c:out value="${user.lastName}"/>!
-        <form method="get" action=/logout>
+        <form style="display: inline-block" method="get" action=/logout>
             <input type="submit" value="Wyloguj się"/>
+        </form>
+        <form style="display: inline-block" method="get" action=/showMyRaports>
+            <input type="submit" value="Moje zlecenia"/>
         </form>
     </div>
 </c:if>
@@ -45,14 +48,16 @@
 
     </div>
 </c:if>
-<h1 class="no-print" align="center">Dxf Reader</h1>
-<hr>
+
+<a href="/"><h1 class="no-print" align="center">Dxf Reader</h1></a>
+
+<hr class="no-print">
 <div class="no-print" align="center">
     <div class="block_container">
         <div id="loadFiles" align="left">
             <form method="post" action="/" enctype="multipart/form-data">
                 <input type="file" name="files" multiple/>
-                <input type="submit" value="Załaduj plik">
+                <input type="submit" value="Załaduj pliki">
             </form>
         </div>
         <div id="newSession" align="right">
@@ -62,7 +67,7 @@
         </div>
     </div>
 </div>
-<hr>
+<hr class="no-print">
 <div class="no-print" align="center">
     <c:if test="${not empty user}">
         <div class="block_container">
@@ -97,11 +102,11 @@
         </div>
     </c:if>
 </div>
-<hr>
+<hr class="no-print">
 <div width="100%" align="center">
     <c:if test="${not empty dxfFileList}">
         <c:forEach items="${dxfFileList}" var="dxfFile" varStatus="loop">
-            <figure>
+            <figure class="figure">
                 <img width="300px" height="auto" src="<c:url value="${dxfFile.namePng}"/>" alt="image"/>
                 <figcaption>
                     <hr>
