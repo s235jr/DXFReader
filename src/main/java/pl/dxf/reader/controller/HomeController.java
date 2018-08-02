@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class HomeController {
 
+
     public final ParseFile parseFile;
 
     public HomeController(ParseFile parseFile) {
@@ -40,9 +41,7 @@ public class HomeController {
 
     @PostMapping("/")
     public String readFile(@RequestParam("files") MultipartFile[] multipartFileArray, Model model, HttpSession session) throws IOException {
-
         List<DxfFile> dxfFileList = new ArrayList<>();
-
         if (session.getAttribute("dxfFileList") != null) {
             dxfFileList = (List<DxfFile>) session.getAttribute("dxfFileList");
         }
@@ -68,6 +67,8 @@ public class HomeController {
                 }
             }
         }
+        LocalDateTime createDate = LocalDateTime.now();
+        model.addAttribute("createDate", createDate);
         model.addAttribute("dxfFileList", dxfFileList);
         return "index";
     }
@@ -76,10 +77,6 @@ public class HomeController {
     public String clearSession(HttpSession session) {
         if (session.getAttribute("dxfFileList") != null) {
             List<DxfFile> dxfFileList = (List<DxfFile>) session.getAttribute("dxfFileList");
-            for(DxfFile dxfFile : dxfFileList) {
-                File file = new File(dxfFile.getNamePng());
-                file.delete();
-            }
             dxfFileList.clear();
             session.setAttribute("dxfFileList", dxfFileList);
         }

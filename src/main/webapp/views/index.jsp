@@ -13,22 +13,40 @@
 <head>
     <title>Dxf Reader</title>
     <link rel="stylesheet" href="/style/style.css">
-    <%--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"--%>
-          <%--integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">--%>
     <style>
         figure {
             display: inline-block;
             width: 300px;
             height: auto;
             padding: 0;
-            border: 3px solid black;
+            border: 2px solid black;
             margin: 0;
         }
     </style>
 </head>
 <body>
-<h1 class="no-print" align="center">Dxf Reader</h1>
+<c:if test="${not empty user}">
+    <div class="no-print" align="right">
+        Witaj&nbsp;<c:out value="${user.firstName}"/>&nbsp;<c:out value="${user.lastName}"/>!
+        <form method="get" action=/logout>
+            <input type="submit" value="Wyloguj się"/>
+        </form>
+    </div>
+</c:if>
+<c:if test="${empty user}">
+    <div class="no-print" align="right">
+        Witaj Nieznajomy!
+        <form style="display: inline-block" method="get" action=/login>
+            <input type="submit" value="Zaloguj się"/>
+        </form>
+        <form style="display: inline-block" method="get" action="/addUser">
+            <input type="submit" value="Zarejestruj się"/>
+        </form>
 
+    </div>
+</c:if>
+<h1 class="no-print" align="center">Dxf Reader</h1>
+<hr>
 <div class="no-print" align="center">
     <div class="block_container">
         <div id="loadFiles" align="left">
@@ -44,19 +62,42 @@
         </div>
     </div>
 </div>
-
+<hr>
 <div class="no-print" align="center">
-    <form method="post" action="/addFooter">
-        <label>Imię:</label>
-        <input type="text" name="firstName" value="${firstName}">
-        <label>Nazwisko:</label>
-        <input type="text" name="lastName" value="${lastName}">
-        <label>Opis:</label>
-        <input type="text" name="description" value="${description}">
-        <input type="submit" value="Zapisz">
-    </form>
+    <c:if test="${not empty user}">
+        <div class="block_container">
+            <form method="post" action="/addFooter">
+                <input READONLY type="text" name="firstName" value="${user.firstName}">
+                <input READONLY type="text" name="lastName" value="${user.lastName}">
+                <input type="text" name="description" value="${description}" placeholder="Opis">
+                <input type="submit" value="Dodaj opis do stopki">
+            </form>
+            <div>
+                <input type="button" onClick="window.print()" value="Drukuj"/>
+            </div>
+            <div>
+                <form method="post" action="/saveRaport">
+                    <input type="hidden" name="description" value="${description}">
+                    <input type="submit" value="Zapisz zamówienie">
+                </form>
+            </div>
+        </div>
+    </c:if>
+    <c:if test="${empty user}">
+        <div class="block_container">
+            <form method="post" action="/addFooter">
+                <input type="text" name="firstName" value="${firstName}" placeholder="Imię">
+                <input type="text" name="lastName" value="${lastName}" placeholder="Nazwisko">
+                <input type="text" name="description" value="${description}" placeholder="Opis">
+                <input type="submit" value="Dodaj do stopki">
+            </form>
+            <div>
+                <input type="button" onClick="window.print()" value="Drukuj"/>
+            </div>
+        </div>
+    </c:if>
 </div>
-
+<hr>
 <div width="100%" align="center">
     <c:if test="${not empty dxfFileList}">
         <c:forEach items="${dxfFileList}" var="dxfFile" varStatus="loop">
@@ -65,25 +106,25 @@
                 <figcaption>
                     <hr>
                     <div class="block_container">
-                        <div width="15%"><c:out value="${dxfFile.thickness}"/>mm&nbsp;||&nbsp;</div>
-                        <div width="15%"><c:out value="${dxfFile.amount}"/>&nbsp;||&nbsp;</div>
-                        <div width="10%"><c:out value="${dxfFile.materialTyp}"/></div>
+                        <div><c:out value="${dxfFile.thickness}"/>mm&nbsp;||&nbsp;</div>
+                        <div><c:out value="${dxfFile.amount}"/>&nbsp;||&nbsp;</div>
+                        <div><c:out value="${dxfFile.materialTyp}"/></div>
                     </div>
                     <hr>
                     <div class="block_container">
-                        <div width="20%">szer:&nbsp;</div>
-                        <div width="20%"><fmt:formatNumber type="number" maxFractionDigits="0"><c:out
+                        <div>szer:&nbsp;</div>
+                        <div><fmt:formatNumber type="number" maxFractionDigits="0"><c:out
                                 value="${dxfFile.width}"/></fmt:formatNumber>mm&nbsp;||&nbsp;
                         </div>
-                        <div width="20%">wys:&nbsp;</div>
-                        <div width="20%"><fmt:formatNumber type="number" maxFractionDigits="0"><c:out
+                        <div>wys:&nbsp;</div>
+                        <div><fmt:formatNumber type="number" maxFractionDigits="0"><c:out
                                 value="${dxfFile.height}"/></fmt:formatNumber>mm
                         </div>
                     </div>
                     <hr>
                     <div class="block_container">
-                        <div width="25%">Nazwa:&nbsp;</div>
-                        <div width="25%"><c:out value="${dxfFile.name}"/>.dxf&nbsp;</div>
+                        <div>Nazwa:&nbsp;</div>
+                        <div><c:out value="${dxfFile.name}"/>.dxf&nbsp;</div>
                     </div>
                     <hr>
                     <div>
@@ -97,26 +138,44 @@
         </c:forEach>
     </c:if>
 </div>
-
 <div class="divFooter">
-    <hr>
-    <div class="block_container" style="border: 3px">
-        <div>Zamawiający:&nbsp;</div>
-        <div><c:out value="${firstName}"/>&nbsp;<c:out value="${lastName}"/></div>
-    </div>
-    <hr>
-    <div class="block_container">
-        <div>Data utworzenia:&nbsp;</div>
-        <div><c:out value="${createDate}"/></div>
-    </div>
-    <hr>
-    <div class="block_container">
-        <div>Opis:&nbsp;</div>
-        <div><c:out value="${description}"/></div>
-    </div>
-    <hr>
+    <c:if test="${empty user}">
+        <hr>
+        <div class="block_container" style="border: 3px">
+            <div>Zamawiający:&nbsp;</div>
+            <div><c:out value="${firstName}"/>&nbsp;<c:out value="${lastName}"/></div>
+        </div>
+        <hr>
+        <div class="block_container">
+            <div>Data utworzenia:&nbsp;</div>
+            <div><c:out value="${createDate}"/></div>
+        </div>
+        <hr>
+        <div class="block_container">
+            <div>Opis:&nbsp;</div>
+            <div><c:out value="${description}"/></div>
+        </div>
+        <hr>
+    </c:if>
+    <c:if test="${not empty user}">
+        <hr>
+        <div class="block_container" style="border: 3px">
+            <div>Zamawiający:&nbsp;</div>
+            <div><c:out value="${user.firstName}"/>&nbsp;<c:out value="${user.lastName}"/></div>
+        </div>
+        <hr>
+        <div class="block_container">
+            <div>Data utworzenia:&nbsp;</div>
+            <div><c:out value="${createDate}"/></div>
+        </div>
+        <hr>
+        <div class="block_container">
+            <div>Opis:&nbsp;</div>
+            <div><c:out value="${description}"/></div>
+        </div>
+        <hr>
+    </c:if>
 </div>
-
 </body>
 </html>
 

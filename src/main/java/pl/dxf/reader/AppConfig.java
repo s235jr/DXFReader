@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalEntityManagerFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.LocaleContextResolver;
 import org.springframework.web.servlet.ViewResolver;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 import javax.persistence.EntityManagerFactory;
+import javax.validation.Validator;
 import java.util.Locale;
 
 @Configuration
@@ -69,6 +71,12 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         multipartResolver.setMaxUploadSize(25000000);
         return multipartResolver;
     }
+
+    @Bean
+    public Validator validator() {
+        return new LocalValidatorFactoryBean();
+    }
+
 
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**", "/style/**").addResourceLocations("file:///home/tomasz/bin/apache-tomcat-9.0.8/bin/", "/style/");

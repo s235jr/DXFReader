@@ -4,16 +4,22 @@ import com.aspose.cad.Image;
 import com.aspose.cad.ImageOptionsBase;
 import com.aspose.cad.imageoptions.CadRasterizationOptions;
 import com.aspose.cad.imageoptions.PngOptions;
+import pl.dxf.reader.entity.Raport;
 
 import javax.imageio.ImageIO;
+import javax.persistence.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
-
+@Entity
+@Table(name="elements")
 public class DxfFile {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private String originalFileName;
     private String name;
     private String namePng;
@@ -22,6 +28,8 @@ public class DxfFile {
     private String amount;
     private double width;
     private double height;
+    @ManyToOne
+    private Raport raport;
 
     public void parseName(String fileName, String sign, String imgFileTyp){
         try {
@@ -146,12 +154,20 @@ public class DxfFile {
         }
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getOriginalFileName() {
         return originalFileName;
     }
 
-    public void setOriginalFileName(String oryginalFileName) {
-        this.originalFileName = oryginalFileName;
+    public void setOriginalFileName(String originalFileName) {
+        this.originalFileName = originalFileName;
     }
 
     public String getName() {
@@ -170,6 +186,13 @@ public class DxfFile {
         this.namePng = namePng;
     }
 
+    public String getThickness() {
+        return thickness;
+    }
+
+    public void setThickness(String thickness) {
+        this.thickness = thickness;
+    }
 
     public String getMaterialTyp() {
         return materialTyp;
@@ -177,14 +200,6 @@ public class DxfFile {
 
     public void setMaterialTyp(String materialTyp) {
         this.materialTyp = materialTyp;
-    }
-
-    public String getThickness() {
-        return thickness;
-    }
-
-    public void setThickness(String thickness) {
-        this.thickness = thickness;
     }
 
     public String getAmount() {
@@ -211,12 +226,27 @@ public class DxfFile {
         this.height = height;
     }
 
+    public Raport getRaport() {
+        return raport;
+    }
+
+    public void setRaport(Raport raport) {
+        this.raport = raport;
+    }
+
     @Override
     public String toString() {
         return "DxfFile{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", originalFileName='" + originalFileName + '\'' +
+                ", name='" + name + '\'' +
+                ", namePng='" + namePng + '\'' +
+                ", thickness='" + thickness + '\'' +
+                ", materialTyp='" + materialTyp + '\'' +
+                ", amount='" + amount + '\'' +
+                ", width=" + width +
+                ", height=" + height +
+                ", raport=" + raport +
                 '}';
     }
-
-
 }

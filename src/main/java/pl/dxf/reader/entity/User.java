@@ -2,8 +2,10 @@ package pl.dxf.reader.entity;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
+import org.mindrot.jbcrypt.BCrypt;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "users")
@@ -13,8 +15,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @NotBlank
+    @Size(min = 3)
     private String firstName;
     @NotBlank
+    @Size(min = 3)
     private String lastName;
     @Email
     @Column(unique = true)
@@ -61,6 +65,9 @@ public class User {
         this.password = password;
     }
 
+    public void setPasswordCrypt(String password) {
+        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
+    }
     @Override
     public String toString() {
         return "User{" +
