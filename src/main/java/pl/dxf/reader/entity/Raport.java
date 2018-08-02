@@ -2,6 +2,7 @@ package pl.dxf.reader.entity;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 @Entity
 @Table(name="raports")
@@ -10,13 +11,12 @@ public class Raport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private Date createdDate;
-    private Date updatedDate;
+    private Timestamp createdDate;
+    private Timestamp updatedDate;
     @ManyToOne
     private User user;
     @ManyToOne
-    private Status status;
-    private String description;
+    private Status status;    private String description;
     private long numberOfDxfFile;
 
     public long getId() {
@@ -27,19 +27,19 @@ public class Raport {
         this.id = id;
     }
 
-    public Date getCreatedDate() {
+    public Timestamp getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(Date createdDate) {
+    public void setCreatedDate(Timestamp createdDate) {
         this.createdDate = createdDate;
     }
 
-    public Date getUpdatedDate() {
+    public Timestamp getUpdatedDate() {
         return updatedDate;
     }
 
-    public void setUpdatedDate(Date updatedDate) {
+    public void setUpdatedDate(Timestamp updatedDate) {
         this.updatedDate = updatedDate;
     }
 

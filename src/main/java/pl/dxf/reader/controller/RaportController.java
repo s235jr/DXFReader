@@ -19,6 +19,7 @@ import pl.dxf.reader.repository.UserRepository;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
 
@@ -60,7 +61,7 @@ public class RaportController {
             dxfFileRepository.save(dxfFile);
         }
 
-        raport.setCreatedDate(new Date(System.currentTimeMillis()));
+        raport.setCreatedDate(new Timestamp(System.currentTimeMillis()));
         raport.setStatus(statusRepository.findOne(1L));
         raport.setUser(user);
         raport.setDescription(description);
@@ -108,7 +109,7 @@ public class RaportController {
         Raport raportDB = raportRepository.findOne(raport.getId());
         raportDB.setDescription(raport.getDescription());
         raportDB.setStatus(raport.getStatus());
-        raportDB.setUpdatedDate(new Date(System.currentTimeMillis()));
+        raportDB.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
         raportRepository.save(raportDB);
         return "redirect:/showMyRaports";
     }
@@ -146,7 +147,7 @@ public class RaportController {
         System.out.println(raport);
         List<DxfFile> dxfFileByRaportId = dxfFileRepository.findDxfFileByRaportId(raport.getId());
         raport.setNumberOfDxfFile(dxfFileByRaportId.size());
-        raport.setUpdatedDate(new Date(System.currentTimeMillis()));
+        raport.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
         raportRepository.save(raport);
         session.setAttribute("raport", raport);
         session.setAttribute("dxfFileRaport", dxfFileByRaportId);

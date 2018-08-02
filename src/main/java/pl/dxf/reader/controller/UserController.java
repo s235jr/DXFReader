@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.dxf.reader.entity.User;
 import pl.dxf.reader.repository.UserRepository;
 
@@ -31,10 +32,14 @@ public class UserController {
     }
 
     @RequestMapping(value = "/addUser", method = RequestMethod.POST)
-    public String saveArticle(@Valid User user, BindingResult result) {
+    public String saveArticle(@Valid User user, BindingResult result, RedirectAttributes attributes) {
         if (result.hasErrors()) {
             return "userForm";
         }
+        if (userRepository.findByEmail(user.getEmail()) !=null){
+            return "userForm";
+        }
+
         user.setPasswordCrypt(user.getPassword());
         userRepository.save(user);
         return "redirect:/";
