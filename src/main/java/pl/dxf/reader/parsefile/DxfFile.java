@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Random;
 import java.util.Scanner;
 @Entity
 @Table(name="elements")
@@ -26,8 +27,8 @@ public class DxfFile {
     private String thickness;
     private String materialTyp;
     private String amount;
-    private double width;
-    private double height;
+    private double width = 0;
+    private double height = 0;
     @ManyToOne
     private Raport raport;
 
@@ -37,15 +38,16 @@ public class DxfFile {
             this.originalFileName = fileName;
             this.name = (valueFromName[3].substring(0, valueFromName[3].length() - 4));
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-
             this.namePng = ("0" + this.name + LocalDateTime.now().format(formatter) + imgFileTyp);
             this.thickness = valueFromName[0];
             this.materialTyp = valueFromName[1];
             this.amount = valueFromName[2];
         } catch (Exception e) {
             e.printStackTrace();
-            this.name = "Error";
-            this.namePng = "Error";
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+            Random random = new Random();
+            this.name = fileName;
+            this.namePng = "0"  + LocalDateTime.now().format(formatter) + Integer.toString(random.nextInt(1000)) + imgFileTyp;
             this.thickness = "Error";
             this.materialTyp = "Error";
             this.amount = "Error";
@@ -74,12 +76,12 @@ public class DxfFile {
                 ParseObject circle = new Circle();
                 circle.parseObject(scanner, dimension);
 
-            } else if (inputLine.equals(typSpline)) {
-
-                ParseObject spline = new Spline();
-                spline.parseObject(scanner, dimension);
-
-            } else if (inputLine.equals(typEllipse)) {
+//            } else if (inputLine.equals(typSpline)) {
+//
+//                ParseObject spline = new Spline(); //todo
+//                spline.parseObject(scanner, dimension);
+//
+//            } else if (inputLine.equals(typEllipse)) {
 
             }
         }
@@ -120,7 +122,7 @@ public class DxfFile {
             int lastPixelX = 0;
             int firstPixelY = resolution;
             int lastPixelY = 0;
-
+            
             for (int i = 0; i < subImage.getWidth(); i++) {
                 for (int j = 0; j < subImage.getHeight(); j++) {
                     int value = subImage.getRGB(i, j);
