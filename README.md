@@ -7,3 +7,6 @@ Aplication allow to read dxf files (vector graphic) and generate raport to print
 
 Aplication create pictures (convert vector graphics to raster), parse files (find max width and heigth dimension) and parse name of files (specific convention) next generate raport to print.
 
+<p align="center">
+  <img src="https://image.ibb.co/kT0GDz/dxfreader.png" width="100%" title="DxfReader">
+</p>
