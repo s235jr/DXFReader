@@ -1,6 +1,7 @@
 package pl.dxf.reader.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Controller;
@@ -28,9 +29,11 @@ import java.util.regex.Pattern;
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class HomeController {
 
-
     @Autowired
     ParseFile parseFile;
+
+    @Value("${images.directory}")
+    private String directoryForImages;
 
     @GetMapping("/")
     public String home() {
@@ -54,8 +57,8 @@ public class HomeController {
     public String clearSession(HttpSession session) {
         if (session.getAttribute("dxfFileList") != null) {
             List<DxfFile> dxfFileList = (List<DxfFile>) session.getAttribute("dxfFileList");
-            for(DxfFile dxfFile : dxfFileList) {
-                File file = new File(dxfFile.getNamePng());
+            for (DxfFile dxfFile : dxfFileList) {
+                File file = new File(directoryForImages + dxfFile.getNamePng());
                 file.delete();
             }
             dxfFileList.clear();
@@ -67,7 +70,7 @@ public class HomeController {
     @PostMapping("/delDxfFileFromList")
     public String removeDxfFileFromSession(HttpSession session, @RequestParam int del) {
         List<DxfFile> dxfFileList = (List<DxfFile>) session.getAttribute("dxfFileList");
-        File file = new File(dxfFileList.get(del).getNamePng());
+        File file = new File(directoryForImages + dxfFileList.get(del).getNamePng());
         file.delete();
         dxfFileList.remove(del);
         session.setAttribute("dxfFileList", dxfFileList);
@@ -75,7 +78,7 @@ public class HomeController {
     }
 
     @PostMapping("/addFooter")
-    public String addFooter(Model model, @RequestParam String firstName, @RequestParam String lastName, @RequestParam String description){
+    public String addFooter(Model model, @RequestParam String firstName, @RequestParam String lastName, @RequestParam String description) {
         model.addAttribute("firstName", firstName);
         model.addAttribute("lastName", lastName);
         model.addAttribute("description", description);

@@ -19,7 +19,7 @@
     <table align="center">
         <form:form method="post" action="/login" modelAttribute="user">
             <tr>
-                <td><form:input path="email" placeholder="Email" value="admin@admin.pl"/><form:errors path="email"/></td>
+                <td><form:input path="email" placeholder="Email" value="tomasz.ciecwierz@gmail.com"/><form:errors path="email"/></td>
             </tr>
             <tr>
                 <td><form:password path="password" placeholder="Hasło" value="admin"/><form:errors path="password"/></td>

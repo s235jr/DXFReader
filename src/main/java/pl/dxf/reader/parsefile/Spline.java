@@ -1,8 +1,7 @@
 package pl.dxf.reader.parsefile;
 
-import org.springframework.stereotype.Component;
-
 import java.util.Scanner;
+
 public class Spline implements ParseObject {
     @Override
     public Scanner parseObject(Scanner scanner, Dimension dimension) {

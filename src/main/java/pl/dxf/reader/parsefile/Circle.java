@@ -1,8 +1,7 @@
 package pl.dxf.reader.parsefile;
 
-import org.springframework.stereotype.Component;
-
 import java.util.Scanner;
+
 public class Circle implements ParseObject {
 
     private double middleX;

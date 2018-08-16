@@ -1,9 +1,8 @@
 package pl.dxf.reader.entity;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.List;
+
 @Entity
 @Table(name="raports")
 public class Raport {

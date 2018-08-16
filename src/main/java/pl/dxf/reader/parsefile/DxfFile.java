@@ -4,16 +4,24 @@ import com.aspose.cad.Image;
 import com.aspose.cad.ImageOptionsBase;
 import com.aspose.cad.imageoptions.CadRasterizationOptions;
 import com.aspose.cad.imageoptions.PngOptions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Service;
 import pl.dxf.reader.entity.Raport;
 
 import javax.imageio.ImageIO;
 import javax.persistence.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 import java.util.Scanner;
+
 @Entity
 @Table(name="elements")
 public class DxfFile {
@@ -89,8 +97,10 @@ public class DxfFile {
         this.width = dimension.getWidth();
     }
 
+
     public void createImg(File file, String imgFileTyp) throws FileNotFoundException {
         InputStream stream = new FileInputStream(file);
+        String pathForImages = "images for databases dxfreader/";
 
         Image image = Image.load(stream);
         CadRasterizationOptions rasterizationOptions = new CadRasterizationOptions();
@@ -109,11 +119,11 @@ public class DxfFile {
         options.setRotation(0);
 
         // Save resultant image
-        image.save(getNamePng(), options);
+        image.save(pathForImages + getNamePng(), options);
 
         BufferedImage img = null;
         try {
-            img = ImageIO.read(new File(getNamePng()));
+            img = ImageIO.read(new File(pathForImages + getNamePng()));
 
             BufferedImage subImage = img.getSubimage((int) (0.25 * size), (0), (int) (0.75 * size),
                     (1 * size));
@@ -122,7 +132,7 @@ public class DxfFile {
             int lastPixelX = 0;
             int firstPixelY = resolution;
             int lastPixelY = 0;
-            
+
             for (int i = 0; i < subImage.getWidth(); i++) {
                 for (int j = 0; j < subImage.getHeight(); j++) {
                     int value = subImage.getRGB(i, j);
@@ -149,7 +159,7 @@ public class DxfFile {
             int cornerY = firstPixelY - (sizeImage - (lastPixelY - firstPixelY))/2;
 
             BufferedImage finalImage = subImage.getSubimage(cornerX, cornerY, sizeImage, sizeImage);
-            File outputFile = new File(getNamePng());
+            File outputFile = new File(pathForImages + getNamePng());
             ImageIO.write(finalImage, imgFileTyp.substring(1, 4), outputFile);
 
         } catch (IOException e) {

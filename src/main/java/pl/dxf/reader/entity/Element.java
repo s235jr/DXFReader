@@ -1,4 +1,4 @@
-//package pl.dxf.reader.entity;
+package pl.dxf.reader.entity;//package pl.dxf.reader.entity;
 //
 //import javax.persistence.*;
 //@Entity

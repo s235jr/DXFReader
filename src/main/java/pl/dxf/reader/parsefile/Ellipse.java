@@ -1,8 +1,7 @@
 package pl.dxf.reader.parsefile;
 
-import org.springframework.stereotype.Component;
-
 import java.util.Scanner;
+
 public class Ellipse implements ParseObject {
 
     private double middleX;

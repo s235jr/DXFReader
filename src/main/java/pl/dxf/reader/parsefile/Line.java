@@ -2,6 +2,7 @@ package pl.dxf.reader.parsefile;
 
 
 import java.util.Scanner;
+
 public class Line implements ParseObject {
     @Override
     public Scanner parseObject(Scanner scanner, Dimension dimension) {

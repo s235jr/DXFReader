@@ -1,6 +1,7 @@
 package pl.dxf.reader.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +37,9 @@ public class RaportController {
     @Autowired
     UserRepository userRepository;
 
+    @Value("${images.directory}")
+    private String directoryForImages;
+
     @ModelAttribute("status")
     public List<Status> getStatus() {
         return statusRepository.findAll();
@@ -48,27 +52,24 @@ public class RaportController {
 
     @PostMapping("/saveRaport")
     public String createRaport(HttpSession session, @RequestParam String description) {
-        Raport raport = new Raport();
-        raportRepository.save(raport);
-        Long lastId = raportRepository.getLastId();
-        raport = raportRepository.findOne(lastId);
         User user = (User) session.getAttribute("user");
         List<DxfFile> dxfFileList = (List<DxfFile>) session.getAttribute("dxfFileList");
-        for (DxfFile dxfFile : dxfFileList) {
-            dxfFile.setRaport(raport);
-            dxfFileRepository.save(dxfFile);
-        }
-
+        Raport raport = new Raport();
         raport.setCreatedDate(new Timestamp(System.currentTimeMillis()));
-        raport.setStatus(statusRepository.findOne(1L));
+        raport.setStatus(statusRepository.getOne(1L));
         raport.setUser(user);
         raport.setDescription(description);
         raport.setNumberOfDxfFile(dxfFileList.size());
         raportRepository.save(raport);
+        Long lastId = raportRepository.getLastId();
+        raport = raportRepository.getOne(lastId);
+        for (DxfFile dxfFile : dxfFileList) {
+            dxfFile.setRaport(raport);
+            dxfFileRepository.save(dxfFile);
+        }
         dxfFileList.clear();
         session.setAttribute("dxfFileList", dxfFileList);
         return "redirect:/";
-
     }
 
     @GetMapping("/showMyRaports")
@@ -86,7 +87,7 @@ public class RaportController {
     public String showRaport(@RequestParam long id, HttpSession session) {
         List<DxfFile> dxfFileByRaportId = dxfFileRepository.findDxfFileByRaportId(id);
         session.setAttribute("dxfFileRaport", dxfFileByRaportId);
-        Raport raport = raportRepository.findOne(id);
+        Raport raport = raportRepository.getOne(id);
         session.setAttribute("raport", raport);
         return "raports";
     }
@@ -96,7 +97,7 @@ public class RaportController {
     public String editRaport(@RequestParam long idEditRaport, HttpSession session, Model model) {
         List<DxfFile> dxfFileByRaportId = dxfFileRepository.findDxfFileByRaportId(idEditRaport);
         session.setAttribute("dxfFileRaportEdit", dxfFileByRaportId);
-        Raport raport = raportRepository.findOne(idEditRaport);
+        Raport raport = raportRepository.getOne(idEditRaport);
         session.setAttribute("raport", raport);
         model.addAttribute("raport", raport);
         return "raportsEdit";
@@ -104,7 +105,7 @@ public class RaportController {
 
     @PostMapping("/acceptEdit")
     public String acceptEdit(@ModelAttribute Raport raport) {
-        Raport raportDB = raportRepository.findOne(raport.getId());
+        Raport raportDB = raportRepository.getOne(raport.getId());
         raportDB.setDescription(raport.getDescription());
         raportDB.setStatus(raport.getStatus());
         raportDB.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
@@ -122,35 +123,30 @@ public class RaportController {
         List<DxfFile> dxfFileByRaportId = dxfFileRepository.findDxfFileByRaportId(idDelRaport);
         if (dxfFileByRaportId != null || !dxfFileByRaportId.isEmpty()) {
             for (DxfFile dxfFile : dxfFileByRaportId) {
-                File file = new File(dxfFile.getNamePng());
+                File file = new File(directoryForImages + dxfFile.getNamePng());
                 file.delete();
                 dxfFileRepository.delete(dxfFile);
             }
         }
-        raportRepository.delete(idDelRaport);
+        raportRepository.deleteById(idDelRaport);
         return "redirect:/showMyRaports";
     }
 
     @PostMapping("/delDxfFileFromRaport")
-    public String delDxfFileFromRaport(@RequestParam long del, HttpSession session, Model model) {
+    public String delDxfFileFromRaport(@RequestParam long del, HttpSession session) {
 
-        DxfFile dxfFile = dxfFileRepository.findOne(del);
-        File file = new File(dxfFile.getNamePng());
+        DxfFile dxfFile = dxfFileRepository.getOne(del);
+        File file = new File(directoryForImages + dxfFile.getNamePng());
         file.delete();
         dxfFileRepository.delete(dxfFile);
-        session.getAttributeNames();
-
-
         Raport raport = (Raport) session.getAttribute("raport");
-        System.out.println(raport);
         List<DxfFile> dxfFileByRaportId = dxfFileRepository.findDxfFileByRaportId(raport.getId());
         raport.setNumberOfDxfFile(dxfFileByRaportId.size());
         raport.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
         raportRepository.save(raport);
         session.setAttribute("raport", raport);
         session.setAttribute("dxfFileRaport", dxfFileByRaportId);
-        model.addAttribute("idEditRaport", dxfFile.getRaport().getId());
-        return "redirect:/editRaport";
+        return "redirect:/editRaport?idEditRaport=" + dxfFile.getRaport().getId();
     }
 
 }

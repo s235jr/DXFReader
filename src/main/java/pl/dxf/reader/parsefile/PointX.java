@@ -1,7 +1,5 @@
 package pl.dxf.reader.parsefile;
 
-import org.springframework.stereotype.Component;
-
 public class PointX implements CheckPoint {
 
     private double pointX;
