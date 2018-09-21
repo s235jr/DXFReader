@@ -7,6 +7,7 @@ import pl.dxf.reader.entity.Raport;
 
 import java.util.List;
 
+@Repository
 public interface RaportRepository extends JpaRepository<Raport, Long> {
 
     @Query("select max(id) from Raport ")

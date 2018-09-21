@@ -17,17 +17,17 @@
 <div align="center">
 
     <table align="center">
-        <form:form method="post" action="/login" modelAttribute="user">
+        <form method="post" action="/login">
             <tr>
-                <td><form:input path="email" placeholder="Email" value="tomasz.ciecwierz@gmail.com"/><form:errors path="email"/></td>
+                <td><input type="text" name="username" placeholder="Email" value="user@user.pl" autofocus="true"/></td>
             </tr>
             <tr>
-                <td><form:password path="password" placeholder="Hasło" value="admin"/><form:errors path="password"/></td>
+                <td><input type="password" name="password" placeholder="Hasło" value="user"/></td>
             </tr>
             <tr>
-                <td colspan="2"><input type="submit" value="Zaloguj się"></td>
+                <td colspan="2"><input name="submit" type="submit" value="Zaloguj się"></td>
             </tr>
-        </form:form>
+        </form>
     </table>
 
 </div>

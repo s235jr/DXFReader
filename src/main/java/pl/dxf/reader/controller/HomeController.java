@@ -1,6 +1,5 @@
 package pl.dxf.reader.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -19,21 +18,25 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Controller
-@SessionAttributes({"dxfFileList", "firstName", "lastName", "description", "createDate"})
+@SessionAttributes({"dxfFileList", "description", "createDate"})
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class HomeController {
 
-    @Autowired
-    ParseFile parseFile;
+    @Value("${imgdirectory}")
+    public String directoryForImages;
 
-    @Value("${images.directory}")
-    private String directoryForImages;
+    private ParseFile parseFile;
+
+    public HomeController(ParseFile parseFile) {
+        this.parseFile = parseFile;
+    }
 
     @GetMapping("/")
     public String home() {
@@ -48,7 +51,8 @@ public class HomeController {
         }
         addFilesToDxfFileList(multipartFileArray, dxfFileList);
         LocalDateTime createDate = LocalDateTime.now();
-        model.addAttribute("createDate", createDate);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd-MM-yyyy");
+        model.addAttribute("createDate", createDate.format(formatter));
         model.addAttribute("dxfFileList", dxfFileList);
         return "index";
     }
@@ -83,7 +87,8 @@ public class HomeController {
         model.addAttribute("lastName", lastName);
         model.addAttribute("description", description);
         LocalDateTime createDate = LocalDateTime.now();
-        model.addAttribute("createDate", createDate);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd-MM-yyyy");
+        model.addAttribute("createDate", createDate.format(formatter));
         return "redirect:/";
     }
 
@@ -110,5 +115,4 @@ public class HomeController {
             }
         }
     }
-
 }

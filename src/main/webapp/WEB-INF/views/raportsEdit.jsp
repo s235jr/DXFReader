@@ -1,6 +1,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%--
   Created by IntelliJ IDEA.
   User: tomasz
@@ -25,17 +26,26 @@
     </style>
 </head>
 <body>
-<div class="no-print" align="right">
-    Witaj&nbsp;<c:out value="${user.firstName}"/>&nbsp;<c:out value="${user.lastName}"/>!
-    <form style="display: inline-block" method="get" action=/logout>
-        <input type="submit" value="Wyloguj się"/>
-    </form>
+<sec:authentication var="currentUser" property="principal"/>
+
+<sec:authorize access="isAuthenticated()">
+    <div align="right">
+        Witaj ${currentUser.user.fullName}
+        <form style="display: inline-block" method="post" action=/logout>
+            <input type="submit" value="Wyloguj się"/>
+        </form>
+    </div>
+</sec:authorize>
+
+<div align="right">
     <form style="display: inline-block" method="get" action=/showMyRaports>
         <input type="submit" value="Moje zlecenia"/>
     </form>
 </div>
+
 <a href="/"><h1 class="no-print" align="center">Dxf Reader</h1></a>
 <hr class="no-print">
+
 <table align="center">
     <tr>
         <td>Numer zamówienia</td>
@@ -52,7 +62,6 @@
     </form:form>
 </table>
 <div width="100%" align="center">
-    <c:if test="${not empty user}">
         <c:forEach items="${dxfFileRaportEdit}" var="dxfFile">
             <figure class="figure">
                 <img width="300px" height="auto" src="<c:url value="${dxfFile.namePng}"/>" alt="image"/>
@@ -89,13 +98,12 @@
                 </figcaption>
             </figure>
         </c:forEach>
-    </c:if>
 </div>
 <div class="divFooter">
     <hr>
     <div class="block_container" style="border: 3px">
         <div>Zamawiający:&nbsp;</div>
-        <div><c:out value="${user.firstName}"/>&nbsp;<c:out value="${user.lastName}"/></div>
+        <div>${currentUser.user.fullName}</div>
     </div>
     <hr>
     <div class="block_container">

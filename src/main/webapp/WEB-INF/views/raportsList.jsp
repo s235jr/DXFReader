@@ -1,6 +1,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%--
   Created by IntelliJ IDEA.
   User: tomasz
@@ -25,30 +26,16 @@
     </style>
 </head>
 <body>
-<c:if test="${not empty user}">
-    <div class="no-print" align="right">
-        Witaj&nbsp;<c:out value="${user.firstName}"/>&nbsp;<c:out value="${user.lastName}"/>!
-        <form style="display: inline-block" method="get" action=/logout>
+<sec:authentication var="currentUser" property="principal"/>
+
+<sec:authorize access="isAuthenticated()">
+    <div align="right">
+        Witaj ${currentUser.user.fullName}
+        <form style="display: inline-block" method="post" action=/logout>
             <input type="submit" value="Wyloguj się"/>
         </form>
-        <form style="display: inline-block" method="get" action=/showMyRaports>
-            <input type="submit" value="Moje zlecenia"/>
-        </form>
     </div>
-</c:if>
-
-<c:if test="${empty user}">
-    <div class="no-print" align="right">
-        Witaj Nieznajomy!
-        <form style="display: inline-block" method="get" action=/login>
-            <input type="submit" value="Zaloguj się"/>
-        </form>
-        <form style="display: inline-block" method="get" action="/addUser">
-            <input type="submit" value="Zarejestruj się"/>
-        </form>
-
-    </div>
-</c:if>
+</sec:authorize>
 
 <a href="/"><h1 class="no-print" align="center">Dxf Reader</h1></a>
 <hr class="no-print">

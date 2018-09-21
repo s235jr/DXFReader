@@ -2,9 +2,11 @@ package pl.dxf.reader.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import pl.dxf.reader.entity.Status;
+import pl.dxf.reader.entity.Role;
 
 @Repository
-public interface StatusRepository extends JpaRepository<Status, Long> {
+public interface RoleRepository extends JpaRepository<Role, Long> {
+
+    Role findByName(String name);
 
 }

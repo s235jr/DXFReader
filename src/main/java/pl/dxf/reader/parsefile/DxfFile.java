@@ -4,8 +4,14 @@ import com.aspose.cad.Image;
 import com.aspose.cad.ImageOptionsBase;
 import com.aspose.cad.imageoptions.CadRasterizationOptions;
 import com.aspose.cad.imageoptions.PngOptions;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import pl.dxf.reader.entity.Raport;
@@ -23,6 +29,9 @@ import java.util.Random;
 import java.util.Scanner;
 
 @Entity
+@Getter
+@Setter
+@ToString
 @Table(name="elements")
 public class DxfFile {
 
@@ -46,7 +55,7 @@ public class DxfFile {
             this.originalFileName = fileName;
             this.name = (valueFromName[3].substring(0, valueFromName[3].length() - 4));
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-            this.namePng = ("0" + this.name + LocalDateTime.now().format(formatter) + imgFileTyp);
+            this.namePng = this.name + LocalDateTime.now().format(formatter) + imgFileTyp;
             this.thickness = valueFromName[0];
             this.materialTyp = valueFromName[1];
             this.amount = valueFromName[2];
@@ -55,7 +64,7 @@ public class DxfFile {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
             Random random = new Random();
             this.name = fileName;
-            this.namePng = "0"  + LocalDateTime.now().format(formatter) + Integer.toString(random.nextInt(1000)) + imgFileTyp;
+            this.namePng = LocalDateTime.now().format(formatter) + Integer.toString(random.nextInt(1000)) + imgFileTyp;
             this.thickness = "Error";
             this.materialTyp = "Error";
             this.amount = "Error";
@@ -100,7 +109,7 @@ public class DxfFile {
 
     public void createImg(File file, String imgFileTyp) throws FileNotFoundException {
         InputStream stream = new FileInputStream(file);
-        String pathForImages = "images for databases dxfreader/";
+        String pathForImages = "imgdb/";
 
         Image image = Image.load(stream);
         CadRasterizationOptions rasterizationOptions = new CadRasterizationOptions();
@@ -167,99 +176,4 @@ public class DxfFile {
         }
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getOriginalFileName() {
-        return originalFileName;
-    }
-
-    public void setOriginalFileName(String originalFileName) {
-        this.originalFileName = originalFileName;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getNamePng() {
-        return namePng;
-    }
-
-    public void setNamePng(String namePng) {
-        this.namePng = namePng;
-    }
-
-    public String getThickness() {
-        return thickness;
-    }
-
-    public void setThickness(String thickness) {
-        this.thickness = thickness;
-    }
-
-    public String getMaterialTyp() {
-        return materialTyp;
-    }
-
-    public void setMaterialTyp(String materialTyp) {
-        this.materialTyp = materialTyp;
-    }
-
-    public String getAmount() {
-        return amount;
-    }
-
-    public void setAmount(String amount) {
-        this.amount = amount;
-    }
-
-    public double getWidth() {
-        return width;
-    }
-
-    public void setWidth(double width) {
-        this.width = width;
-    }
-
-    public double getHeight() {
-        return height;
-    }
-
-    public void setHeight(double height) {
-        this.height = height;
-    }
-
-    public Raport getRaport() {
-        return raport;
-    }
-
-    public void setRaport(Raport raport) {
-        this.raport = raport;
-    }
-
-    @Override
-    public String toString() {
-        return "DxfFile{" +
-                "id=" + id +
-                ", originalFileName='" + originalFileName + '\'' +
-                ", name='" + name + '\'' +
-                ", namePng='" + namePng + '\'' +
-                ", thickness='" + thickness + '\'' +
-                ", materialTyp='" + materialTyp + '\'' +
-                ", amount='" + amount + '\'' +
-                ", width=" + width +
-                ", height=" + height +
-                ", raport=" + raport +
-                '}';
-    }
 }

@@ -1,81 +1,42 @@
 package pl.dxf.reader.controller;
 
-
-import org.mindrot.jbcrypt.BCrypt;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.dxf.reader.entity.User;
-import pl.dxf.reader.repository.UserRepository;
+import pl.dxf.reader.service.UserServiceImpl;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.Validator;
 
 @Controller
 public class UserController {
 
-    @Autowired
-    UserRepository userRepository;
+    private UserServiceImpl userServiceImpl;
+    private Validator validator;
 
-    @Autowired
-    Validator validator;
+    public UserController(UserServiceImpl userServiceImpl, Validator validator) {
+        this.userServiceImpl = userServiceImpl;
+        this.validator = validator;
+    }
 
-    @RequestMapping("/addUser")
+    @GetMapping("/register")
     public String addArticle(Model model) {
         User user = new User();
         model.addAttribute("user", user);
-        return "userForm";
+        return "register";
     }
 
-    @RequestMapping(value = "/addUser", method = RequestMethod.POST)
+    @PostMapping(value = "/register")
     public String saveArticle(@Valid User user, BindingResult result, RedirectAttributes attributes) {
-        if (result.hasErrors()) {
-            return "userForm";
-        }
-        if (userRepository.findByEmail(user.getEmail()) !=null){
-            return "userForm";
-        }
-
-        user.setPasswordCrypt(user.getPassword());
-        userRepository.save(user);
-        return "redirect:/";
-    }
-
-    @GetMapping("/login")
-    public String login(Model model) {
-        User user = new User();
-        model.addAttribute("user", user);
-        return "loginForm";
-    }
-
-    @PostMapping("/login")
-    public String checkEmailAndPass(@ModelAttribute User user, HttpSession session) {
-        User u = userRepository.findByEmail(user.getEmail());
-        if (u == null) {
-            return "loginForm";
-        }
-
-        String passFromDB = u.getPassword();
-        String salt = passFromDB.substring(0, 29);
-        String cryptPassFromUser = BCrypt.hashpw(user.getPassword(), salt);
-
-        if (passFromDB.equals(cryptPassFromUser)) {
-            session.setAttribute("user", u);
-            return "redirect:/";
+        if (result.hasErrors() || userServiceImpl.findByEmail(user.getEmail()) != null) {
+            return "register";
         } else {
-            return "loginForm";
+            userServiceImpl.saveUser(user);
         }
-    }
-
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.removeAttribute("user");
         return "redirect:/";
     }
-
-
 }

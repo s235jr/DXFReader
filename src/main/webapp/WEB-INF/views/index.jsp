@@ -1,6 +1,8 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <%--
   Created by IntelliJ IDEA.
   User: tomasz
@@ -25,33 +27,40 @@
     </style>
 </head>
 <body>
-<c:if test="${not empty user}">
-    <div class="no-print" align="right">
-        Witaj&nbsp;<c:out value="${user.firstName}"/>&nbsp;<c:out value="${user.lastName}"/>!
-        <form style="display: inline-block" method="get" action=/logout>
-            <input type="submit" value="Wyloguj się"/>
-        </form>
-        <form style="display: inline-block" method="get" action=/showMyRaports>
-            <input type="submit" value="Moje zlecenia"/>
-        </form>
-    </div>
-</c:if>
-<c:if test="${empty user}">
-    <div class="no-print" align="right">
-        Witaj Nieznajomy!
-        <form style="display: inline-block" method="get" action=/login>
+<sec:authentication var="currentUser" property="principal"/>
+
+<sec:authorize access="not isAuthenticated()">
+    <div align="right">
+        <form style="display: inline-block" action="/login" method="post">
+            <input type="email" name="username" value="user@user.pl" placeholder="Email"/>
+            <input type="password" name="password" value="user" placeholder="Password"/>
             <input type="submit" value="Zaloguj się"/>
         </form>
-        <form style="display: inline-block" method="get" action="/addUser">
+        <form style="display: inline-block" method="get" action="/register">
             <input type="submit" value="Zarejestruj się"/>
         </form>
-
     </div>
-</c:if>
+</sec:authorize>
 
-<a href="/"><h1 class="no-print" align="center">Dxf Reader</h1></a>
+<sec:authorize access="isAuthenticated()">
+    <div align="right">
+        Witaj ${currentUser.user.fullName}
+        <form style="display: inline-block" method="post" action=/logout>
+            <input type="submit" value="Wyloguj się"/>
+        </form>
+    </div>
+</sec:authorize>
 
+<div align="right">
+    <form style="display: inline-block" method="get" action=/showMyRaports>
+        <input type="submit" value="Moje zlecenia"/>
+    </form>
+</div>
+
+<h1 class="no-print" align="center"><span
+        style="font-family: comic sans ms, sans-serif; color: #808080;">DXF READER</span></h1>
 <hr class="no-print">
+
 <div class="no-print" align="center">
     <div class="block_container">
         <div id="loadFiles" align="left">
@@ -67,13 +76,15 @@
         </div>
     </div>
 </div>
+
 <hr class="no-print">
+
 <div class="no-print" align="center">
-    <c:if test="${not empty user}">
+    <sec:authorize access="isAuthenticated()">
         <div class="block_container">
             <form method="post" action="/addFooter">
-                <input READONLY type="text" name="firstName" value="${user.firstName}">
-                <input READONLY type="text" name="lastName" value="${user.lastName}">
+                <input READONLY type="text" name="firstName" value="${currentUser.user.firstName}">
+                <input READONLY type="text" name="lastName" value="${currentUser.user.lastName}">
                 <input type="text" name="description" value="${description}" placeholder="Opis">
                 <input type="submit" value="Dodaj opis do stopki">
             </form>
@@ -87,8 +98,9 @@
                 </form>
             </div>
         </div>
-    </c:if>
-    <c:if test="${empty user}">
+    </sec:authorize>
+
+    <sec:authorize access="not isAuthenticated()">
         <div class="block_container">
             <form method="post" action="/addFooter">
                 <input type="text" name="firstName" value="${firstName}" placeholder="Imię">
@@ -100,8 +112,9 @@
                 <input type="button" onClick="window.print()" value="Drukuj"/>
             </div>
         </div>
-    </c:if>
+    </sec:authorize>
 </div>
+
 <hr class="no-print">
 <div width="100%" align="center">
     <c:if test="${not empty dxfFileList}">
@@ -143,8 +156,9 @@
         </c:forEach>
     </c:if>
 </div>
+
 <div class="divFooter">
-    <c:if test="${empty user}">
+    <sec:authorize access="not isAuthenticated()">
         <hr>
         <div class="block_container" style="border: 3px">
             <div>Zamawiający:&nbsp;</div>
@@ -161,12 +175,13 @@
             <div><c:out value="${description}"/></div>
         </div>
         <hr>
-    </c:if>
-    <c:if test="${not empty user}">
+    </sec:authorize>
+
+    <sec:authorize access="isAuthenticated()">
         <hr>
         <div class="block_container" style="border: 3px">
             <div>Zamawiający:&nbsp;</div>
-            <div><c:out value="${user.firstName}"/>&nbsp;<c:out value="${user.lastName}"/></div>
+            <div>${currentUser.user.fullName}</div>
         </div>
         <hr>
         <div class="block_container">
@@ -179,7 +194,7 @@
             <div><c:out value="${description}"/></div>
         </div>
         <hr>
-    </c:if>
+    </sec:authorize>
 </div>
 </body>
 </html>
