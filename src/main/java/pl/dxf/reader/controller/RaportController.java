@@ -31,6 +31,7 @@ public class RaportController {
     @Value("${imgdirectory}")
     private String directoryForImages;
 
+
     private RaportRepository raportRepository;
     private StatusRepository statusRepository;
     private UserRepository userRepository;
@@ -77,6 +78,7 @@ public class RaportController {
 
     @GetMapping("/showMyRaports")
     public String showMyRaports(HttpSession session, @AuthenticationPrincipal CurrentUser currentUser) {
+
         List<Raport> raportByUserId = raportRepository.findRaportByUserId(currentUser.getUser().getId());
         session.setAttribute("raports", raportByUserId);
         return "raportsList";
