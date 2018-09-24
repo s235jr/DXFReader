@@ -13,9 +13,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import pl.dxf.reader.entity.Raport;
 
+import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import javax.persistence.*;
 import java.awt.image.BufferedImage;
@@ -44,7 +46,9 @@ public class DxfFile {
     private String thickness;
     private String materialTyp;
     private String amount;
+    @Column(scale = 1)
     private double width = 0;
+    @Column(scale = 1)
     private double height = 0;
     @ManyToOne
     private Raport raport;
@@ -105,7 +109,6 @@ public class DxfFile {
         this.height = dimension.getHeight();
         this.width = dimension.getWidth();
     }
-
 
     public void createImg(File file, String imgFileTyp) throws FileNotFoundException {
         InputStream stream = new FileInputStream(file);

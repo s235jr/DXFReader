@@ -39,6 +39,9 @@
         <form style="display: inline-block" method="get" action="/register">
             <input type="submit" value="Zarejestruj się"/>
         </form>
+        <form style="display: inline-block" method="get" action="/forgotpassword">
+            <input type="submit" value="Przypomnij hasło"/>
+        </form>
     </div>
 </sec:authorize>
 

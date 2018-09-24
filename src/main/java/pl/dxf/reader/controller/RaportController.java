@@ -1,5 +1,6 @@
 package pl.dxf.reader.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,12 +32,12 @@ public class RaportController {
     @Value("${imgdirectory}")
     private String directoryForImages;
 
-
     private RaportRepository raportRepository;
     private StatusRepository statusRepository;
     private UserRepository userRepository;
     private DxfFileRepository dxfFileRepository;
 
+    @Autowired
     public RaportController(RaportRepository raportRepository, StatusRepository statusRepository,
                             UserRepository userRepository, DxfFileRepository dxfFileRepository) {
         this.raportRepository = raportRepository;
@@ -78,7 +79,6 @@ public class RaportController {
 
     @GetMapping("/showMyRaports")
     public String showMyRaports(HttpSession session, @AuthenticationPrincipal CurrentUser currentUser) {
-
         List<Raport> raportByUserId = raportRepository.findRaportByUserId(currentUser.getUser().getId());
         session.setAttribute("raports", raportByUserId);
         return "raportsList";

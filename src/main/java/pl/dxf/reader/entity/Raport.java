@@ -22,7 +22,7 @@ public class Raport {
     @ManyToOne
     private User user;
     @ManyToOne
-    private Status status;
+    private Status status;  //todo enum
     private String description;
     private long numberOfDxfFile;
 

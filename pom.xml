@@ -5,8 +5,8 @@
 
     <groupId>pl.dxf.reader</groupId>
     <artifactId>dxf</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <version>0.0.2-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
     <name>dxf</name>
     <description>Demo project for Spring Boot</description>
@@ -93,6 +93,16 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-taglibs</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.5.5</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
         </dependency>
     </dependencies>
 

@@ -1,5 +1,6 @@
 package pl.dxf.reader.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -34,6 +35,7 @@ public class HomeController {
 
     private ParseFile parseFile;
 
+    @Autowired
     public HomeController(ParseFile parseFile) {
         this.parseFile = parseFile;
     }
@@ -44,7 +46,7 @@ public class HomeController {
     }
 
     @PostMapping("/")
-    public String readFile(@RequestParam("files") MultipartFile[] multipartFileArray, Model model, HttpSession session) throws IOException {
+    public String readFiles(@RequestParam("files") MultipartFile[] multipartFileArray, Model model, HttpSession session) throws IOException {
         List<DxfFile> dxfFileList = new ArrayList<>();
         if (session.getAttribute("dxfFileList") != null) {
             dxfFileList = (List<DxfFile>) session.getAttribute("dxfFileList");
